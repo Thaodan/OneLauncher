@@ -27,8 +27,8 @@
 # You should have received a copy of the GNU General Public License
 # along with OneLauncher.  If not, see <http://www.gnu.org/licenses/>.
 ###########################################################################
-from PySide6 import QtCore, QtWidgets
-from PySide6.QtUiTools import QUiLoader
+from qtpy import QtCore, QtWidgets
+from qtpy.uic import loadUi
 from OneLauncher.OneLauncherUtils import QByteArray2str
 from OneLauncher.ProgressMonitor import ProgressMonitor
 import os
@@ -62,8 +62,7 @@ class PatchWindow:
 
         ui_file = QtCore.QFile(os.path.join(data_folder, "ui", "winPatch.ui"))
         ui_file.open(QtCore.QFile.ReadOnly)
-        loader = QUiLoader()
-        self.winLog = loader.load(ui_file, parentWidget=parent)
+        self.winLog = loadUi(ui_file)
         ui_file.close()
 
         self.winLog.setWindowFlags(QtCore.Qt.Dialog | QtCore.Qt.FramelessWindowHint)

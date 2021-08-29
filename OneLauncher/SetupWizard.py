@@ -26,8 +26,8 @@
 # You should have received a copy of the GNU General Public License
 # along with OneLauncher.  If not, see <http://www.gnu.org/licenses/>.
 ###########################################################################
-from PySide6 import QtCore, QtWidgets
-from PySide6.QtUiTools import QUiLoader
+from qtpy import QtCore, QtWidgets
+from qtpy.uic import loadUi
 import os
 import glob
 
@@ -50,8 +50,7 @@ class SetupWizard:
         )
 
         ui_file.open(QtCore.QFile.ReadOnly)
-        loader = QUiLoader()
-        self.winSetupWizard = loader.load(ui_file)
+        self.winSetupWizard = loadUi(ui_file)
         ui_file.close()
 
         self.winSetupWizard.setWindowFlags(QtCore.Qt.Dialog)

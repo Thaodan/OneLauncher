@@ -26,8 +26,8 @@
 # You should have received a copy of the GNU General Public License
 # along with OneLauncher.  If not, see <http://www.gnu.org/licenses/>.
 ###########################################################################
-from PySide6 import QtCore, QtWidgets
-from PySide6.QtUiTools import QUiLoader
+from qtpy import QtCore, QtWidgets
+from qtpy.uic import loadUiType
 from OneLauncher.OneLauncherUtils import QByteArray2str
 import os.path
 import logging
@@ -83,16 +83,18 @@ class StartGame:
 
         ui_file = QtCore.QFile(os.path.join(data_folder, "ui", "winLog.ui"))
         ui_file.open(QtCore.QFile.ReadOnly)
-        loader = QUiLoader()
-        self.winLog = loader.load(ui_file, parentWidget=parent)
+        uiWinLog, base_class = loadUiType(ui_file)
+        self.winLogObj = QtWidgets.QDialog(self.parent)
+        self.winLog = uiWinLog()
+        self.winLog.setupUi(self.winLogObj)
         ui_file.close()
 
-        self.winLog.setWindowFlags(QtCore.Qt.Dialog | QtCore.Qt.FramelessWindowHint)
+        self.winLogObj.setWindowFlags(QtCore.Qt.Dialog | QtCore.Qt.FramelessWindowHint)
 
         if self.osType.usingWindows:
-            self.winLog.setWindowTitle("Output")
+            self.winLogObj.setWindowTitle("Output")
         else:
-            self.winLog.setWindowTitle("Launch Game - Wine output")
+            self.winLogObj.setWindowTitle("Launch Game - Wine output")
 
         # self.winLog.btnStart.setVisible(False)
         self.winLog.btnStart.setText("Back")
@@ -181,7 +183,7 @@ class StartGame:
         self.winLog.txtLog.append("Game Directory: " + runDir)
         self.winLog.txtLog.append("Game Client: " + appName)
 
-        self.winLog.show()
+        self.winLogObj.show()
 
         self.runStatupScripts()
 
@@ -252,4 +254,4 @@ class StartGame:
         self.process.start(self.command, self.arguments)
         self.logger.info("Game started with: " + str([self.command, self.arguments]))
 
-        return self.winLog.exec_()
+        return self.winLogObj.exec_()

@@ -30,8 +30,8 @@ import os
 import sys
 from typing import List
 import defusedxml.minidom
-from PySide6 import QtCore, QtGui, QtWidgets
-from PySide6.QtUiTools import QUiLoader
+from qtpy import QtCore, QtGui, QtWidgets
+from qtpy.uic import loadUi, loadUiType
 import qdarkstyle
 from OneLauncher.SettingsWindow import SettingsWindow
 from OneLauncher.AddonManager import AddonManager
@@ -90,17 +90,17 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Create the main window and set all text so that translations are handled via gettext
         ui_file.open(QtCore.QFile.ReadOnly)
-        loader = QUiLoader()
-        self.winMain = loader.load(ui_file, parentWidget=self)
+        self.winMain = loadUi(ui_file, baseinstance=self)
+
         ui_file.close()
-        self.winMain.setWindowFlags(QtCore.Qt.Dialog)
-        self.winMain.setWindowFlags(QtCore.Qt.FramelessWindowHint)
-        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+      #  self.winMain.setWindowFlags(QtCore.Qt.Dialog)
+      #  self.winMain.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+       # self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.setFixedSize(790, 470)
 
 
         # Set window style
-        self.app.setStyleSheet(qdarkstyle.load_stylesheet_pyside2())
+        #self.app.setStyleSheet(qdarkstyle.load_stylesheet_pyside2())
 
         # Set font size explicitly to stop OS text size options from
         # breaking the UI.
@@ -110,18 +110,18 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Temporary fix for qdarkstyle dropdown issue.
         # See https://github.com/ColinDuquesnoy/QDarkStyleSheet/issues/200
-        self.setStyleSheet(
-        """
-        QComboBox::item:checked {
-        height: 12px;
-        border: 1px solid #32414B;
-        margin-top: 0px;
-        margin-bottom: 0px;
-        padding: 4px;
-        padding-left: 0px;
-        }
-        """
-        )
+        # self.setStyleSheet(
+        # """
+        # QComboBox::item:checked {
+        # height: 12px;
+        # border: 1px solid #32414B;
+        # margin-top: 0px;
+        # margin-bottom: 0px;
+        # padding: 4px;
+        # padding-left: 0px;
+        # }
+        # """
+        # )
 
         # center window on screen
         self.center()
@@ -232,15 +232,15 @@ class MainWindow(QtWidgets.QMainWindow):
             from keyring.backends import OS_X
             keyring.set_keyring(OS_X.Keyring())
         else:
-            from keyring.backends import SecretService
-            keyring.set_keyring(SecretService.Keyring())
+            pass
+            # from keyring.backends import SecretService
+            #keyring.set_keyring(SecretService.Keyring())
 
     def btnAboutSelected(self):
         ui_file = QtCore.QFile(os.path.join(self.data_folder, "ui", "winAbout.ui"))
 
         ui_file.open(QtCore.QFile.ReadOnly)
-        loader = QUiLoader()
-        dlgAbout = loader.load(ui_file, parentWidget=self)
+        dlgAbout = loadUi(ui_file)
         ui_file.close()
 
         dlgAbout.setWindowFlags(QtCore.Qt.Popup)
@@ -553,8 +553,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 )
 
                 ui_file.open(QtCore.QFile.ReadOnly)
-                loader = QUiLoader()
-                dlgChooseAccount = loader.load(ui_file, parentWidget=self)
+                dlgChooseAccount = loadUi(ui_file)
                 ui_file.close()
 
                 dlgChooseAccount.setWindowFlags(QtCore.Qt.Popup)
@@ -762,7 +761,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 QtCore.QEvent.StyleChange,
                 QtCore.QEvent.FontChange,
                 QtCore.QEvent.ContentsRectChange,
-                QtCore.QEvent.Create,
+             #   QtCore.QEvent.Create,
                 QtCore.QEvent.Wheel,
             ]
             self.app.installEventFilter(self)
